@@ -1,6 +1,12 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { CompositeDecorator, Editor, EditorState, Modifier } from 'draft-js'
+import {
+  CompositeDecorator,
+  Editor,
+  EditorState,
+  Entity,
+  Modifier
+} from 'draft-js'
 
 // Components
 import { PipeLink } from './pipe-link'
@@ -22,6 +28,13 @@ export function TextField() {
   const [editorState, setEditorState] = useState(
     EditorState.createEmpty(decorator)
   )
+  const [focus, setFocus] = useState(null)
+
+  const editorRef = useRef(null)
+
+  useEffect(() => {
+    editorRef && console.log(editorRef.current) && setFocus(editorRef.current.focus)
+  }, [editorRef])
 
   function setEntityAtSelection() {
     const contentState = editorState.getCurrentContent()
@@ -45,10 +58,28 @@ export function TextField() {
     )
 
     setEditorState(newEditorState)
+
   }
 
-  function getPosition() {
-    console.log(editorState.getSelection().getStartOffset())
+  function insertPlacehold(label, meta) {
+    const currentContent = editorState.getCurrentContent()
+    const selection = editorState.getSelection()
+    const entityKey = Entity.create('LINK', 'IMMUTABLE', {meta})
+    const textWithEntity = Modifier.insertText(
+      currentContent,
+      selection,
+      label,
+      null,
+      entityKey
+    )
+
+    const newEditorState = EditorState.push(
+      editorState,
+      textWithEntity,
+      'insert-characters'
+    )
+
+    setEditorState(newEditorState)
   }
 
   function findLinkEntities(contentBlock, callback, contentState) {
@@ -63,10 +94,14 @@ export function TextField() {
 
   return (
     <Fragment>
-      <button onClick={setEntityAtSelection}>Add Link</button>
-      <button onClick={getPosition}>Get Position</button>
+      <button onClick={setEntityAtSelection}>Add Link to Selection</button>
+      <button onClick={() => insertPlacehold('{{empty pipe}}', 'meta')}>Insert Placeholder</button>
       <TextFieldContainer>
-        <Editor editorState={editorState} onChange={setEditorState} />
+        <Editor
+          ref={editorRef}
+          editorState={editorState}
+          onChange={setEditorState}
+        />
       </TextFieldContainer>
     </Fragment>
   )

@@ -4,13 +4,18 @@ import styled from 'styled-components'
 const DecoratedPipeLink = styled.span`
   background-color: tan;
 
-  // &:hover {
-  //   background-color: pink;
-  //   cursor: pointer;
-  // }
+  &:hover {
+    background-color: pink;
+    cursor: pointer;
+  }
 `
 
-export function PipeLink({ contentState, entityKey, ...otherProps }) {
+export function PipeLink({ contentState, entityKey, children, ...otherProps }) {
   const { label } = contentState.getEntity(entityKey).getData()
-  return <DecoratedPipeLink>{label}</DecoratedPipeLink>
+  console.log(otherProps)
+  return (
+    <DecoratedPipeLink data-offset-key={otherProps.offsetKey}>
+      {children}
+    </DecoratedPipeLink>
+  )
 }
