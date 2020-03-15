@@ -4,6 +4,7 @@ import {
   CompositeDecorator,
   Editor,
   EditorState,
+  Entity,
   Modifier
 } from 'draft-js'
 import { v4 as uuid } from 'uuid'
@@ -78,12 +79,13 @@ export function TextField() {
       newEntityKey
     )
 
-    const newEditorState = EditorState.push(
+    let newEditorState = EditorState.push(
       editorState,
       newContentState,
       'insert-characters'
     )
 
+    newEditorState = EditorState.moveFocusToEnd(newEditorState)
     setEditorState(newEditorState)
   }
 

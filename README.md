@@ -1,8 +1,7 @@
 ## TODO
 
 #### MVP
-+ Place the cursor behind the link once created
-+ Insert at end when un-focused
++ Force focus after new pipe rather than end of input
 + Word wrap on white-space
 + Convert to data format needed for persistance
 + Convert from stored data format back into text field
