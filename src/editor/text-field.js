@@ -2,9 +2,9 @@ import React, { Fragment, useState } from 'react'
 import styled from 'styled-components'
 import {
   CompositeDecorator,
+  convertFromRaw,
   Editor,
   EditorState,
-  Entity,
   Modifier
 } from 'draft-js'
 import { v4 as uuid } from 'uuid'
@@ -26,6 +26,48 @@ const Button = styled.button`
   margin-right: 2px;
 `
 
+const data = {
+  blocks: [
+    {
+      type: 'unstyled',
+      text:
+        'This is a Question1.selected pipe and a AgeQuestion.unselected pipe',
+      entityRanges: [
+        {
+          offset: 10,
+          length: 18,
+          key: '0'
+        },
+        {
+          offset: 40,
+          length: 22,
+          key: '1'
+        }
+      ]
+    }
+  ],
+  entityMap: {
+    '0': {
+      type: 'PIPE_LINK',
+      mutability: 'IMMUTABLE',
+      data: {
+        pipeId: '3',
+        questionLabel: 'Question1',
+        selector: 'selected'
+      }
+    },
+    '1': {
+      type: 'PIPE_LINK',
+      mutability: 'IMMUTABLE',
+      data: {
+        pipeId: '452',
+        questionLabel: 'AgeQuestion',
+        selector: 'unselected'
+      }
+    }
+  }
+}
+
 export function TextField() {
   const decorators = new CompositeDecorator([
     {
@@ -34,8 +76,10 @@ export function TextField() {
     }
   ])
 
+  const blocks = convertFromRaw(data)
+
   const [editorState, setEditorState] = useState(
-    EditorState.createEmpty(decorators)
+    EditorState.createWithContent(blocks, decorators)
   )
 
   function handleEditorChange(newEditorState) {

@@ -16,4 +16,4 @@ export const pipeableQuestions = [
   }
 ]
 
-export const pipes = [{ id: 1000 }, { id: 1001 }, { id: 1002 }]
+export const pipes = [{ questionId: 1 }, { questionId: 2 }]
